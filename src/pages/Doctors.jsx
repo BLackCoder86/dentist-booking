@@ -1,22 +1,29 @@
-import React, { useState } from "react";
-import doctors from "../data/doctors";
+import { useState } from "react";
 
-const Doctors = () => {
+const doctors = [
+  { name: "Dr. Anika Rahman", email: "anika@example.com", img: "https://i.pravatar.cc/100?img=1" },
+  { name: "Dr. John Smith", email: "john@example.com", img: "https://i.pravatar.cc/100?img=2" },
+  { name: "Dr. Alice Brown", email: "alice@example.com", img: "https://i.pravatar.cc/100?img=3" },
+  { name: "Dr. Michael Lee", email: "michael@example.com", img: "https://i.pravatar.cc/100?img=4" },
+  { name: "Dr. Sophia Davis", email: "sophia@example.com", img: "https://i.pravatar.cc/100?img=5" },
+];
+
+export default function Doctors() {
   const [page, setPage] = useState(1);
-  const perPage = 5;
-  const totalPages = Math.ceil(doctors.length / perPage);
-  const startIndex = (page - 1) * perPage;
-  const currentDoctors = doctors.slice(startIndex, startIndex + perPage);
+  const pageSize = 2;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  const paginated = doctors.slice(start, end);
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Our Doctors</h1>
+      <h1 className="text-2xl font-bold mb-6">Our Doctors</h1>
       <div className="grid gap-4">
-        {currentDoctors.map((doc) => (
-          <div key={doc.id} className="flex items-center gap-4 bg-white p-4 rounded shadow">
-            <img src={doc.image} alt={doc.name} className="w-16 h-16 rounded-full" />
+        {paginated.map((doc, idx) => (
+          <div key={idx} className="bg-white p-4 rounded-2xl shadow-md flex items-center gap-4">
+            <img src={doc.img} alt={doc.name} className="w-16 h-16 rounded-full" />
             <div>
-              <h2 className="font-semibold">{doc.name}</h2>
+              <p className="font-semibold">{doc.name}</p>
               <p className="text-gray-600">{doc.email}</p>
             </div>
           </div>
@@ -24,25 +31,22 @@ const Doctors = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6 gap-2">
+      <div className="flex gap-2 mt-6">
         <button
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          onClick={() => setPage(page - 1)}
+          className="px-4 py-2 border rounded disabled:opacity-50"
         >
           Prev
         </button>
-        <span>Page {page} of {totalPages}</span>
         <button
-          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-          disabled={page === totalPages}
-          className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          disabled={end >= doctors.length}
+          onClick={() => setPage(page + 1)}
+          className="px-4 py-2 border rounded disabled:opacity-50"
         >
           Next
         </button>
       </div>
     </div>
   );
-};
-
-export default Doctors;
+}
